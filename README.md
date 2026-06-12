@@ -1,139 +1,311 @@
+<div align="center">
 
-## Projeto de Modelagem de Dados para Oficina Mecânica
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1F9BD4,50:2E75B6,100:16265F&height=200&section=header&text=Modelagem%20—%20Oficina%20Mecânica&fontSize=42&fontColor=ffffff&fontAlignY=38&desc=ER%20→%20Lógica%20→%20Física%20→%20Dados%20→%20Consultas&descAlignY=58&descSize=18" width="100%"/>
 
-### 1. Contexto e Objetivo
-Este projeto tem como objetivo criar um banco de dados relacional para uma oficina mecânica, contemplando desde a modelagem conceitual até a implementação física e elaboração de consultas SQL para análise e gestão dos dados.
+[![SQL](https://img.shields.io/badge/SQL-Modelagem%20Relacional-003B57?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.mysql.com/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-### 2. Etapas do Projeto
-1. Modelagem conceitual (ER): Identificação das entidades e relacionamentos principais.
-2. Modelagem lógica: Definição das tabelas, atributos, chaves primárias e estrangeiras.
-3. Implementação física: Criação do banco de dados via script SQL.
-4. Persistência de dados: Inserção de dados para testes.
-5. Consultas SQL: Queries para responder perguntas relevantes ao negócio.
+[![SQL](https://img.shields.io/badge/SQL-003B57?style=flat-square&logo=postgresql&logoColor=white)](https://www.mysql.com/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![ER Diagram](https://img.shields.io/badge/ER%20Diagram-Incluído-green?style=flat-square)](https://github.com/fassir)
+[![Faker](https://img.shields.io/badge/Faker-Dados%20Sintéticos-9C27B0?style=flat-square)](https://faker.readthedocs.io/)
 
-### 3. Modelo Lógico
-O sistema registra clientes, veículos, funcionários, ordens de serviço, serviços realizados e peças utilizadas, permitindo consultas gerenciais e operacionais.
+</div>
 
-![Diagrama ER](diagramaER.png)
+---
 
-**Entidades e relacionamentos:**
-- Cliente (id_cliente, nome, telefone, email)
-- Veículo (id_veiculo, placa, modelo, ano, id_cliente)
-- Funcionário (id_funcionario, nome, função)
-- Serviço (id_servico, descricao, valor)
-- Peça (id_peca, nome, quantidade_estoque, valor_unitario)
-- Ordem de Serviço (id_ordem, data, id_cliente, id_veiculo, id_funcionario, valor_total)
-- Ordem_Servico_Servico (id_ordem, id_servico, quantidade)
-- Ordem_Servico_Peca (id_ordem, id_peca, quantidade)
+## 🎯 Sobre o Projeto
 
-**Exemplo de esquema lógico (modelo relacional):**
+Banco de dados relacional completo para uma **oficina mecânica**, desenvolvido do zero seguindo todas as etapas da engenharia de dados: modelagem ER → modelo lógico → modelo físico (DDL) → inserção de dados → consultas analíticas. Inclui diagrama ER, scripts SQL e gerador de dados sintéticos em Python.
+
+---
+
+## 🗂️ Estrutura do Repositório
+
+```
+projeto_modelagem_dados_2/
+├── diagrama_er.png / diagrama_er.pdf   # Diagrama Entidade-Relacionamento
+├── schema.sql                           # DDL — modelo físico completo
+├── data.sql                             # DML — dados de exemplo
+├── query.sql                            # Consultas analíticas
+├── gerador_de_dados.py                  # Gerador de dados sintéticos
+└── README.md
+```
+
+---
+
+## 🔄 Etapas do Projeto
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  1. Modelo   │───▶│  2. Modelo   │───▶│  3. Modelo   │
+│     ER       │    │    Lógico    │    │    Físico    │
+│ (entidades,  │    │ (tabelas,    │    │ (DDL SQL,    │
+│  relações)   │    │  atributos,  │    │  constraints,│
+│              │    │  chaves)     │    │  índices)    │
+└──────────────┘    └──────────────┘    └──────┬───────┘
+                                               │
+                    ┌──────────────┐    ┌──────▼───────┐
+                    │  5. Consul-  │◀───│  4. Inserção │
+                    │  tas (query) │    │  de Dados    │
+                    │              │    │  (data.sql + │
+                    │              │    │  gerador.py) │
+                    └──────────────┘    └──────────────┘
+```
+
+---
+
+## 🧩 Diagrama ER
+
+```
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│   Cliente   │─────────│    Veículo   │─────────│    OS       │
+│             │  possui │              │  possui │ (Ordem de   │
+│ ClienteID   │         │  VeiculoID   │         │  Serviço)   │
+│ Nome        │         │  Placa       │         │ OSID        │
+│ CPF/CNPJ    │         │  Modelo      │         │ DataAbertura│
+│ Telefone    │         │  Ano         │         │ DataFechamento│
+│ Endereco    │         │  Marca       │         │ Status      │
+└─────────────┘         └──────────────┘         │ ValorTotal  │
+                                                  └──────┬──────┘
+                                                         │
+                              ┌──────────────────────────┤
+                              │                          │
+                     ┌────────▼──────┐         ┌────────▼──────┐
+                     │  OS_Servico   │         │   OS_Peca     │
+                     │  (N:N)        │         │   (N:N)       │
+                     └───────┬───────┘         └───────┬───────┘
+                             │                         │
+                    ┌────────▼──────┐         ┌────────▼──────┐
+                    │   Serviço     │         │     Peça      │
+                    │               │         │               │
+                    │ ServicoID     │         │ PecaID        │
+                    │ Descricao     │         │ Nome          │
+                    │ Valor         │         │ Codigo        │
+                    │ Duracao_h     │         │ Preco         │
+                    └───────────────┘         │ Estoque_qtd   │
+                                              └───────────────┘
+                    ┌────────────────┐
+                    │  Funcionário   │──────────── (responsável pela OS)
+                    │                │
+                    │ FuncID         │
+                    │ Nome           │
+                    │ Especialidade  │
+                    │ Salario        │
+                    └────────────────┘
+```
+
+---
+
+## 📐 Modelo Físico (schema.sql)
+
+<details>
+<summary><strong>🗄️ DDL — Tabelas principais</strong></summary>
+
 ```sql
 CREATE TABLE Cliente (
-  id_cliente INT PRIMARY KEY,
-  nome VARCHAR(100),
-  telefone VARCHAR(20),
-  email VARCHAR(100)
+    ClienteID   INT          PRIMARY KEY AUTO_INCREMENT,
+    Nome        VARCHAR(100) NOT NULL,
+    Documento   VARCHAR(18)  UNIQUE NOT NULL,  -- CPF ou CNPJ
+    Tipo        ENUM('PF','PJ') NOT NULL,
+    Telefone    VARCHAR(20),
+    Email       VARCHAR(100),
+    Endereco    VARCHAR(200)
 );
 
 CREATE TABLE Veiculo (
-  id_veiculo INT PRIMARY KEY,
-  placa VARCHAR(10),
-  modelo VARCHAR(50),
-  ano INT,
-  id_cliente INT,
-  FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
+    VeiculoID   INT          PRIMARY KEY AUTO_INCREMENT,
+    ClienteID   INT          NOT NULL,
+    Placa       CHAR(8)      UNIQUE NOT NULL,
+    Marca       VARCHAR(50)  NOT NULL,
+    Modelo      VARCHAR(100) NOT NULL,
+    Ano         YEAR         NOT NULL,
+    Cor         VARCHAR(30),
+    Quilometragem INT,
+    FOREIGN KEY (ClienteID) REFERENCES Cliente(ClienteID)
 );
 
-CREATE TABLE Funcionario (
-  id_funcionario INT PRIMARY KEY,
-  nome VARCHAR(100),
-  funcao VARCHAR(50)
-);
-
-CREATE TABLE Servico (
-  id_servico INT PRIMARY KEY,
-  descricao VARCHAR(100),
-  valor DECIMAL(10,2)
-);
-
-CREATE TABLE Peca (
-  id_peca INT PRIMARY KEY,
-  nome VARCHAR(100),
-  quantidade_estoque INT,
-  valor_unitario DECIMAL(10,2)
-);
-
-CREATE TABLE Ordem_Servico (
-  id_ordem INT PRIMARY KEY,
-  data DATE,
-  id_cliente INT,
-  id_veiculo INT,
-  id_funcionario INT,
-  valor_total DECIMAL(10,2),
-  FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
-  FOREIGN KEY (id_veiculo) REFERENCES Veiculo(id_veiculo),
-  FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id_funcionario)
-);
-
-CREATE TABLE Ordem_Servico_Servico (
-  id_ordem INT,
-  id_servico INT,
-  quantidade INT,
-  PRIMARY KEY (id_ordem, id_servico),
-  FOREIGN KEY (id_ordem) REFERENCES Ordem_Servico(id_ordem),
-  FOREIGN KEY (id_servico) REFERENCES Servico(id_servico)
-);
-
-CREATE TABLE Ordem_Servico_Peca (
-  id_ordem INT,
-  id_peca INT,
-  quantidade INT,
-  PRIMARY KEY (id_ordem, id_peca),
-  FOREIGN KEY (id_ordem) REFERENCES Ordem_Servico(id_ordem),
-  FOREIGN KEY (id_peca) REFERENCES Peca(id_peca)
+CREATE TABLE OrdemServico (
+    OSID            INT         PRIMARY KEY AUTO_INCREMENT,
+    VeiculoID       INT         NOT NULL,
+    FuncionarioID   INT         NOT NULL,
+    DataAbertura    DATETIME    DEFAULT CURRENT_TIMESTAMP,
+    DataFechamento  DATETIME,
+    Status          ENUM('aberta','em_andamento','aguardando_peca',
+                         'pronta','entregue','cancelada') DEFAULT 'aberta',
+    Descricao       TEXT,
+    ValorTotal      DECIMAL(10,2),
+    FOREIGN KEY (VeiculoID)     REFERENCES Veiculo(VeiculoID),
+    FOREIGN KEY (FuncionarioID) REFERENCES Funcionario(FuncID)
 );
 ```
 
-### 4. Criação do Banco de Dados
-O arquivo `schema.sql` contém o script SQL para criar todas as tabelas e relacionamentos do banco de dados da oficina mecânica. Para iniciar o projeto, execute o conteúdo desse arquivo em seu SGBD (MySQL, PostgreSQL, etc.) para estruturar o banco conforme o modelo lógico apresentado.
+</details>
 
-### 5. Geração de Dados de Teste
-Para popular o banco de dados com muitos dados de teste, utilize o script `gerador_de_dados.py` presente no projeto. Ele gera comandos SQL de inserção para todas as tabelas, compatíveis com o modelo lógico.
+<details>
+<summary><strong>🔗 Tabelas associativas (N:N)</strong></summary>
 
-**Como gerar o arquivo de dados:**
+```sql
+-- OS × Serviço (N:N)
+CREATE TABLE OS_Servico (
+    OSID        INT     NOT NULL,
+    ServicoID   INT     NOT NULL,
+    Quantidade  INT     NOT NULL DEFAULT 1,
+    ValorCobrado DECIMAL(10,2),
+    PRIMARY KEY (OSID, ServicoID),
+    FOREIGN KEY (OSID)      REFERENCES OrdemServico(OSID),
+    FOREIGN KEY (ServicoID) REFERENCES Servico(ServicoID)
+);
+
+-- OS × Peça (N:N)
+CREATE TABLE OS_Peca (
+    OSID        INT     NOT NULL,
+    PecaID      INT     NOT NULL,
+    Quantidade  INT     NOT NULL DEFAULT 1,
+    ValorUnit   DECIMAL(10,2),
+    PRIMARY KEY (OSID, PecaID),
+    FOREIGN KEY (OSID)   REFERENCES OrdemServico(OSID),
+    FOREIGN KEY (PecaID) REFERENCES Peca(PecaID)
+);
+```
+
+</details>
+
+---
+
+## 💡 Tecnologias
+
+<div align="center">
+
+[![My Skills](https://skillicons.dev/icons?i=mysql,python&theme=dark)](https://mysql.com/)
+
+</div>
+
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| MySQL | 8.0 | Banco de dados relacional |
+| SQL DDL/DML | — | Schema, constraints, inserção |
+| Python | 3.10+ | Gerador de dados sintéticos |
+| Faker (pt_BR) | 18+ | Dados realistas em português |
+| draw.io / dbdiagram.io | — | Diagrama ER |
+
+---
+
+## 🔍 Consultas Analíticas (query.sql)
+
+<details>
+<summary><strong>📊 Consultas implementadas</strong></summary>
+
+```sql
+-- OSes abertas por mecânico
+SELECT f.Nome AS mecanico, COUNT(os.OSID) AS ordens_abertas
+FROM Funcionario f
+JOIN OrdemServico os ON os.FuncionarioID = f.FuncID
+WHERE os.Status IN ('aberta', 'em_andamento')
+GROUP BY f.FuncID
+ORDER BY ordens_abertas DESC;
+
+-- Serviços mais realizados
+SELECT s.Descricao, COUNT(oss.OSID) AS vezes_realizado,
+       SUM(oss.ValorCobrado) AS receita_total
+FROM Servico s
+JOIN OS_Servico oss ON oss.ServicoID = s.ServicoID
+GROUP BY s.ServicoID
+ORDER BY vezes_realizado DESC
+LIMIT 10;
+
+-- Peças com estoque crítico (< 5 unidades)
+SELECT Nome, Codigo, Estoque_qtd, Preco
+FROM Peca
+WHERE Estoque_qtd < 5
+ORDER BY Estoque_qtd ASC;
+
+-- Ticket médio por OS por mês
+SELECT DATE_FORMAT(DataAbertura, '%Y-%m') AS mes,
+       COUNT(*) AS total_os,
+       ROUND(AVG(ValorTotal), 2) AS ticket_medio,
+       SUM(ValorTotal) AS receita_mensal
+FROM OrdemServico
+WHERE Status = 'entregue'
+GROUP BY mes
+ORDER BY mes;
+```
+
+</details>
+
+---
+
+## 🤖 Gerador de Dados (gerador_de_dados.py)
+
+<details>
+<summary><strong>🐍 Geração de dados sintéticos em português</strong></summary>
+
+```python
+from faker import Faker
+import random, mysql.connector
+
+fake = Faker('pt_BR')
+
+MARCAS_MODELOS = {
+    'Fiat':      ['Uno', 'Palio', 'Argo', 'Mobi', 'Cronos'],
+    'Volkswagen':['Gol', 'Polo', 'T-Cross', 'Virtus'],
+    'Chevrolet': ['Onix', 'Tracker', 'S10', 'Montana'],
+}
+
+def gerar_veiculo():
+    marca  = random.choice(list(MARCAS_MODELOS.keys()))
+    modelo = random.choice(MARCAS_MODELOS[marca])
+    return {
+        'placa': fake.license_plate(),
+        'marca': marca, 'modelo': modelo,
+        'ano':   random.randint(2000, 2024),
+        'quilometragem': random.randint(0, 300000)
+    }
+
+# python gerador_de_dados.py --clientes 200 --os 500
+```
+
+</details>
+
+---
+
+## 🚀 Como Executar
+
 ```bash
-python gerador_de_dados.py > data.sql
+# 1. Clone o repositório
+git clone https://github.com/fassir/projeto_modelagem_dados_2.git
+cd projeto_modelagem_dados_2
+
+# 2. Crie o banco e execute o schema
+mysql -u root -p -e "CREATE DATABASE oficina_db;"
+mysql -u root -p oficina_db < schema.sql
+
+# 3. Insira dados de exemplo
+mysql -u root -p oficina_db < data.sql
+
+# 4. Ou use o gerador sintético
+pip install faker mysql-connector-python
+python gerador_de_dados.py
+
+# 5. Execute as consultas analíticas
+mysql -u root -p oficina_db < query.sql
 ```
-O arquivo `data.sql` será criado com milhares de registros para clientes, veículos, funcionários, serviços, peças, ordens de serviço e suas relações. Basta executar esse arquivo SQL no seu banco para popular todas as tabelas.
 
-### 6. Consultas e Análise de Dados
-O arquivo `query.sql` contém exemplos de consultas SQL que podem ser utilizadas para analisar e extrair informações relevantes do banco de dados da oficina. As queries respondem perguntas sobre clientes, faturamento, peças, funcionários, veículos e serviços, utilizando cláusulas como SELECT, WHERE, GROUP BY, HAVING, ORDER BY, JOIN e LIMIT.
+---
 
-Para executar as consultas, basta rodar o conteúdo de `query.sql` no seu SGBD após popular o banco com os dados de teste. As perguntas respondidas incluem:
-- Quais clientes mais utilizaram os serviços da oficina?
-- Qual o faturamento mensal da oficina?
-- Quais peças foram mais utilizadas em determinado período?
-- Quais funcionários realizaram mais atendimentos?
-- Quais veículos passaram por revisões completas?
-- Qual o histórico de serviços de um determinado cliente?
-- Faturamento por funcionário
-- Peças com estoque baixo
-- Clientes com muitos veículos cadastrados
-- Serviços mais realizados
+## 👤 Autor
 
-Essas consultas podem ser adaptadas conforme a necessidade de análise do projeto.
+<div align="center">
 
-### 7. Exemplos de Resultados das Consultas
-Ao executar as consultas presentes em `query.sql` sobre o banco populado com os dados gerados, é possível obter resultados como:
-- **Clientes mais frequentes:** Listagem dos nomes dos clientes que mais abriram ordens de serviço, útil para identificar o perfil dos principais consumidores da oficina.
-- **Faturamento mensal:** Tabela com o valor total faturado em cada mês, permitindo análise de sazonalidade e desempenho financeiro.
-- **Peças mais utilizadas:** Relação das peças com maior uso em serviços, auxiliando no controle de estoque e compras.
-- **Funcionários mais produtivos:** Ranking dos funcionários que mais atenderam ordens, útil para reconhecimento e gestão de equipe.
-- **Veículos com maior histórico de serviços:** Identificação de veículos que passaram por diversas revisões ou manutenções, importante para acompanhamento de clientes recorrentes.
-- **Histórico detalhado de serviços de um cliente:** Visualização das ordens, datas, serviços realizados e quantidades para um cliente específico.
-- **Faturamento por funcionário:** Comparativo do valor total gerado por cada colaborador.
-- **Peças com estoque baixo:** Lista de peças que precisam ser repostas, facilitando a gestão do almoxarifado.
-- **Clientes com muitos veículos cadastrados:** Identificação de clientes com frota própria ou empresas parceiras.
-- **Serviços mais realizados:** Ranking dos tipos de serviços mais executados na oficina.
+**Fabio Piassi**
 
-Esses resultados permitem uma visão ampla e detalhada do funcionamento da oficina, apoiando decisões estratégicas, operacionais e comerciais.
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/fabio-piassi)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/fassir)
+
+</div>
+
+---
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:16265F,50:2E75B6,100:1F9BD4&height=120&section=footer" width="100%"/>
